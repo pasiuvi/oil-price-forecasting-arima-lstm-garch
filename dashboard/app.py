@@ -96,14 +96,14 @@ if page == "Overview":
                                   line=dict(color="orange", width=1, dash="dash")))
         fig.update_layout(title="Brent Crude Oil Price History", xaxis_title="Date",
                            yaxis_title="Price (USD)", height=500, hovermode="x unified")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
         st.subheader("Daily Returns Volatility")
         fig2 = go.Figure()
         fig2.add_trace(go.Scatter(x=df["date"], y=df["daily_return"] * 100, mode="lines",
                                    line=dict(color="crimson", width=0.6)))
         fig2.update_layout(xaxis_title="Date", yaxis_title="Daily Return (%)", height=300)
-        st.plotly_chart(fig2, use_container_width=True)
+        st.plotly_chart(fig2, width='stretch')
     else:
         st.warning("Run the src/ scripts first (Steps 1 and 2) to generate the data this page needs.")
 
@@ -121,14 +121,14 @@ elif page == "Price Forecasts":
     for tab, (name, path) in zip(tabs, forecast_plots.items()):
         with tab:
             if file_exists(path):
-                st.image(path, use_container_width=True)
+                st.image(path, width='stretch')
             else:
                 st.info(f"Run 03_model_development.py to generate the {name} forecast plot.")
 
     st.header("Random Forest — Feature Importance")
     fi_path = f"{OUT_DIR}/plot_7_feature_importance.png"
     if file_exists(fi_path):
-        st.image(fi_path, use_container_width=True)
+        st.image(fi_path, width='stretch')
 
 # ---------------------------------------------------------
 # PAGE: Volatility (GARCH)
@@ -138,10 +138,10 @@ elif page == "Volatility (GARCH)":
     col1, col2 = st.columns(2)
     with col1:
         if file_exists(f"{OUT_DIR}/plot_9_returns_volatility_clustering.png"):
-            st.image(f"{OUT_DIR}/plot_9_returns_volatility_clustering.png", use_container_width=True)
+            st.image(f"{OUT_DIR}/plot_9_returns_volatility_clustering.png", width='stretch')
     with col2:
         if file_exists(f"{OUT_DIR}/plot_10_acf_squared_returns.png"):
-            st.image(f"{OUT_DIR}/plot_10_acf_squared_returns.png", use_container_width=True)
+            st.image(f"{OUT_DIR}/plot_10_acf_squared_returns.png", width='stretch')
 
     st.header("GARCH Forecast vs Realized Volatility")
     garch_csv = f"{OUT_DIR}/garch_comparison_results.csv"
@@ -151,7 +151,7 @@ elif page == "Volatility (GARCH)":
         fig.add_trace(go.Scatter(x=gdf["date"], y=gdf["realized_volatility"], name="Realized Volatility"))
         fig.add_trace(go.Scatter(x=gdf["date"], y=gdf["predicted_volatility"], name="GARCH Forecast"))
         fig.update_layout(height=450, xaxis_title="Date", yaxis_title="Volatility (%)", hovermode="x unified")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
     else:
         st.info("Run 04_garch_volatility.py to generate this data.")
 
@@ -168,13 +168,13 @@ elif page == "Model Comparison":
     results_path = f"{OUT_DIR}/model_comparison_results.csv"
     if file_exists(results_path):
         results_df = pd.read_csv(results_path)
-        st.dataframe(results_df, use_container_width=True)
+        st.dataframe(results_df, width='stretch')
 
         fig = go.Figure()
         for metric in ["MAE", "RMSE", "MAPE"]:
             fig.add_trace(go.Bar(x=results_df["model"], y=results_df[metric], name=metric))
         fig.update_layout(barmode="group", height=450, yaxis_title="Error")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
         best = results_df.loc[results_df["RMSE"].idxmin()]
         st.success(f"Best performing model by RMSE: **{best['model']}** ({best['RMSE']:.4f})")
