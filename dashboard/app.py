@@ -20,8 +20,8 @@ st.set_page_config(
     layout="wide",
 )
 
-DATA_DIR = "../data"
-OUT_DIR = "../outputs"
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+OUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "outputs")
 
 # ---------------------------------------------------------
 # Professional styling
