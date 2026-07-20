@@ -15,7 +15,7 @@ import plotly.graph_objects as go
 import os
 
 st.set_page_config(
-    page_title="Brent Oil Price Forecasting Dashboard",
+    page_title="Brent Crude Analytics",
     page_icon="🛢️",
     layout="wide",
 )
@@ -23,8 +23,43 @@ st.set_page_config(
 DATA_DIR = "../data"
 OUT_DIR = "../outputs"
 
-st.title("🛢️ Brent Crude Oil — Forecasting & Volatility Dashboard")
-st.caption("MSc Data Science — NIB 7072 Machine Learning Coursework — Question 2")
+# ---------------------------------------------------------
+# Professional styling
+# ---------------------------------------------------------
+st.markdown("""
+<style>
+    .main .block-container {
+        padding-top: 2rem;
+        max-width: 1200px;
+    }
+    [data-testid="stMetric"] {
+        background-color: #f8f9fb;
+        border: 1px solid #e6e8eb;
+        border-radius: 10px;
+        padding: 16px 18px;
+    }
+    [data-testid="stMetricLabel"] {
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
+    [data-testid="stMetricValue"] {
+        font-size: 1.6rem;
+    }
+    h1 {
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+    .dashboard-tagline {
+        color: #6b7280;
+        font-size: 1.05rem;
+        margin-top: -8px;
+        margin-bottom: 1.5rem;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.title("🛢️ Brent Crude Analytics")
+st.markdown('<p class="dashboard-tagline">Price forecasting and volatility intelligence for Brent Crude Oil</p>', unsafe_allow_html=True)
 
 def file_exists(path):
     return os.path.exists(path)
@@ -49,7 +84,10 @@ if page == "Overview":
         col1.metric("Latest Price", f"${df['close'].iloc[-1]:.2f}")
         col2.metric("30-Day Change", f"{((df['close'].iloc[-1] / df['close'].iloc[-30]) - 1) * 100:.2f}%")
         col3.metric("Data Points", f"{len(df):,}")
-        col4.metric("Date Range", f"{df['date'].min().date()} to {df['date'].max().date()}")
+        years_covered = (df["date"].max() - df["date"].min()).days / 365.25
+        col4.metric("History Covered", f"{years_covered:.1f} years")
+
+        st.caption(f"Data from {df['date'].min().date()} to {df['date'].max().date()}")
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=df["date"], y=df["close"], mode="lines", name="Close Price",
@@ -149,18 +187,19 @@ elif page == "Model Comparison":
 else:
     st.header("About this project")
     st.markdown("""
-    This dashboard supports Question 2 (Advanced Time Series Forecasting) of the
-    NIB 7072 Machine Learning coursework.
+    This platform forecasts Brent Crude Oil prices and models market volatility,
+    comparing traditional statistical, machine learning, and deep learning
+    approaches on a single, consistent dataset.
 
-    **Dataset:** Brent Crude Oil daily futures prices (Yahoo Finance, ticker `BZ=F`)
+    **Dataset:** Brent Crude Oil daily futures prices (ticker `BZ=F`)
 
     **Models compared:**
-    - ARIMA (traditional statistical model)
-    - LSTM (deep learning)
-    - Random Forest (machine learning ensemble)
-    - GARCH(1,1) / GJR-GARCH (volatility modelling)
+    - ARIMA — traditional statistical forecasting
+    - LSTM — deep learning sequence model
+    - Random Forest — machine learning ensemble
+    - GARCH(1,1) / GJR-GARCH — volatility and risk modelling
 
-    **Why oil, not a stock index:** oil prices affect global logistics and freight
-    costs directly, giving this project a real operational angle rather than a
-    purely academic one.
+    **Why oil, not a stock index:** oil prices feed directly into global
+    logistics and freight cost planning, giving this analysis a genuine
+    operational angle rather than a purely academic one.
     """)
